@@ -24,13 +24,24 @@ form.addEventListener('submit', function(event){
             } else {
                 taskTd.style.textDecoration = 'none'; 
                 doneButton.textContent = 'Not Finish'; 
-                doneButton.style.backgroundColor = '#D91656'; 
+                doneButton.style.backgroundColor = '#ccc'; 
             }
         });
 
+        const deleteButton = document.createElement('button');
+        deleteButton.textContent = 'Delete';
+        deleteButton.classList.add('delete-button');
+
+        deleteButton.addEventListener('click', function () {
+            tr.remove(); 
+        });
+
         statusTd.appendChild(doneButton);
+        statusTd.appendChild(deleteButton);
+
         tr.appendChild(taskTd);
         tr.appendChild(statusTd);
+
         taskList.appendChild(tr);
         taskInput.value = ''; 
     }
