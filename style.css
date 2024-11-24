@@ -80,21 +80,29 @@ h1{
     color: #555;
 }
 
-#taskList ul {
-    list-style-type: none;
-    padding: 0;
+#taskList table {
+    width: 100%;
+    border-collapse: collapse; /* Makes the table borders collapse into a single line */
 }
 
-#taskList ul li {
-    padding: 10px;
-    font-size: 18px;
-    background-color: #f9f9f9;
-    margin-bottom: 10px;
-    border-radius: 5px;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+#taskList th, #taskList td {
+    padding: 12px;
+    text-align: left;
+    border-bottom: 1px solid #ddd;
 }
 
-#taskList ul li:hover {
-    background-color: #e0e0e0;
+#taskList th {
+    background-color: #4CAF50;
+    color: white;
+    font-weight: bold;
+}
+
+#taskList tr:hover {
+    background-color: #f1f1f1;
+}
+
+#taskList td {
+    font-size: 16px;
+    color: #333;
 }
 

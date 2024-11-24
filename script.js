@@ -1,5 +1,5 @@
 const form = document.querySelector('#taskForm form');
-const taskList = document.querySelector('#taskList ul');
+const taskList = document.querySelector('#taskList tbody');
 
 form.addEventListener('submit', function(event){
     event.preventDefault();
@@ -7,9 +7,11 @@ form.addEventListener('submit', function(event){
     const taskText = taskInput.value.trim();
 
     if(taskText){
-        const li = document.createElement('li');
-        li.textContent = taskText;
-        taskList.appendChild(li);
-        taskInput.value = '';
+        const tr = document.createElement('tr');
+        const td = document.createElement('td');
+        td.textContent = taskText;
+        tr.appendChild(td);
+        taskList.appendChild(tr);
+        taskInput.value = ''; 
     }
 });
