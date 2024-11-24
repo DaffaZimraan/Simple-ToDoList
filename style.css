@@ -82,7 +82,7 @@ h1{
 
 #taskList table {
     width: 100%;
-    border-collapse: collapse; /* Makes the table borders collapse into a single line */
+    border-collapse: collapse;
 }
 
 #taskList th, #taskList td {
@@ -106,3 +106,17 @@ h1{
     color: #333;
 }
 
+#taskList .done-button {
+    padding: 8px 16px;
+    font-size: 14px;
+    color: white;
+    background-color: #D91656;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+#taskList .done-button:hover {
+    background-color: darkred;
+}

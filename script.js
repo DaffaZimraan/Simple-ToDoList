@@ -8,9 +8,29 @@ form.addEventListener('submit', function(event){
 
     if(taskText){
         const tr = document.createElement('tr');
-        const td = document.createElement('td');
-        td.textContent = taskText;
-        tr.appendChild(td);
+        const taskTd = document.createElement('td');
+        taskTd.textContent = taskText;
+
+        const statusTd = document.createElement('td');
+        const doneButton = document.createElement('button');
+        doneButton.textContent = 'Not Finish';
+        doneButton.classList.add('done-button');
+
+        doneButton.addEventListener('click', function() {
+            if (doneButton.textContent === 'Not Finish') {
+                taskTd.style.textDecoration = 'line-through'; 
+                doneButton.textContent = 'Finished'; 
+                doneButton.style.backgroundColor = '#4CAF50'; 
+            } else {
+                taskTd.style.textDecoration = 'none'; 
+                doneButton.textContent = 'Not Finish'; 
+                doneButton.style.backgroundColor = '#D91656'; 
+            }
+        });
+
+        statusTd.appendChild(doneButton);
+        tr.appendChild(taskTd);
+        tr.appendChild(statusTd);
         taskList.appendChild(tr);
         taskInput.value = ''; 
     }
