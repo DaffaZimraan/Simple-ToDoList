@@ -1,23 +1,58 @@
 const TODO_STATES = {
     FINISHED: 'Finished',
     NOT_FINISHED: 'Not Finish'
-};
+  };
   
-const BUTTON_COLORS = {
+  const BUTTON_COLORS = {
     FINISHED: '#4CAF50',
     NOT_FINISHED: '#ccc'
-};
+  };
   
-const DOM = {
+  const STORAGE_KEY = 'todoListTasks';
+
+  const DOM = {
     form: document.querySelector('#taskForm form'),
     taskList: document.querySelector('#taskList tbody'),
     clearAllButton: document.getElementById('clearAll'),
     taskInput: document.getElementById('task')
-};
+  };
   
-class TaskManager {
+  class TaskManager {
     constructor(containerElement) {
       this.container = containerElement;
+      this.tasks = [];
+      this.loadTasks();
+    }
+  
+    loadTasks() {
+      try {
+        const storedTasks = localStorage.getItem(STORAGE_KEY);
+        this.tasks = storedTasks ? JSON.parse(storedTasks) : [];
+        this.renderTasks();
+      } catch (error) {
+        console.error('Error loading tasks:', error);
+        this.tasks = [];
+      }
+    }
+  
+    saveTasks() {
+      try {
+        const tasksToSave = this.tasks.map(task => ({
+          text: task.text,
+          isFinished: task.isFinished
+        }));
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(tasksToSave));
+      } catch (error) {
+        console.error('Error saving tasks:', error);
+      }
+    }
+  
+    renderTasks() {
+      this.container.innerHTML = '';
+      this.tasks.forEach(task => {
+        const taskElement = this.createTaskElement(task.text, task.isFinished);
+        this.container.appendChild(taskElement);
+      });
     }
   
     createTaskElement(taskText, isFinished) {
@@ -61,6 +96,7 @@ class TaskManager {
   
     toggleTaskStatus(button) {
       const taskRow = button.closest('tr');
+      const taskIndex = Array.from(this.container.children).indexOf(taskRow);
       const taskText = taskRow.querySelector('td:first-child');
       const isNowFinished = button.textContent === TODO_STATES.NOT_FINISHED;
   
@@ -68,38 +104,46 @@ class TaskManager {
       button.textContent = isNowFinished ? TODO_STATES.FINISHED : TODO_STATES.NOT_FINISHED;
       button.style.backgroundColor = isNowFinished ? BUTTON_COLORS.FINISHED : BUTTON_COLORS.NOT_FINISHED;
   
+      this.tasks[taskIndex].isFinished = isNowFinished;
+      this.saveTasks();
       this.reorderTasks();
     }
   
     deleteTask(event) {
-      event.target.closest('tr').remove();
+      const taskRow = event.target.closest('tr');
+      const taskIndex = Array.from(this.container.children).indexOf(taskRow);
+      
+      taskRow.remove();
+      this.tasks.splice(taskIndex, 1);
+      this.saveTasks();
     }
   
     addTask(taskText, isFinished = false) {
+      this.tasks.push({ text: taskText, isFinished });
+      
       const taskElement = this.createTaskElement(taskText, isFinished);
       this.container.appendChild(taskElement);
+      
+      this.saveTasks();
       this.reorderTasks();
     }
   
     reorderTasks() {
-      const rows = Array.from(this.container.querySelectorAll('tr'));
-      rows.sort((a, b) => {
-        const aStatus = a.querySelector('.done-button').textContent === TODO_STATES.FINISHED ? 1 : 0;
-        const bStatus = b.querySelector('.done-button').textContent === TODO_STATES.FINISHED ? 1 : 0;
-        return aStatus - bStatus;
-      });
-  
-      rows.forEach(row => this.container.appendChild(row));
+      this.tasks.sort((a, b) => Number(a.isFinished) - Number(b.isFinished));
+      this.renderTasks();
+      this.saveTasks();
     }
   
     clearAll() {
       this.container.innerHTML = '';
+      this.tasks = [];
+      this.saveTasks();
     }
-}
+  }
   
-const taskManager = new TaskManager(DOM.taskList);
+  const taskManager = new TaskManager(DOM.taskList);
   
-DOM.form.addEventListener('submit', (event) => {
+  DOM.form.addEventListener('submit', (event) => {
     event.preventDefault();
     const taskText = DOM.taskInput.value.trim();
   
@@ -107,6 +151,6 @@ DOM.form.addEventListener('submit', (event) => {
       taskManager.addTask(taskText);
       DOM.taskInput.value = '';
     }
-});
+  });
   
-DOM.clearAllButton.addEventListener('click', () => taskManager.clearAll());
+  DOM.clearAllButton.addEventListener('click', () => taskManager.clearAll());
