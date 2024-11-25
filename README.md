@@ -1,1 +1,2 @@
 # To Do List Project
+A simple and efficient todo list application built with JavaScript. This application allows users to manage their tasks with features like adding, marking as complete, deleting, and automatic task reordering.
